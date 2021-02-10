@@ -4,12 +4,15 @@ import { map, withLatestFrom } from "rxjs/operators";
 
 @Injectable()
 export class MarktgruppenService {
+  // intern gehaltene Subjects
   private allMarktgruppen = new BehaviorSubject<MarketGroupView[]>(initGruppen);
   private nameFilter = new BehaviorSubject<string>("");
-  nameFilter$ = this.nameFilter.asObservable();
 
+  // Observable für den Zugriff nach außen
+  nameFilter$ = this.nameFilter.asObservable();
   allGruppen$ = this.allMarktgruppen.asObservable();
 
+  // Observable für die Gefilterten Gruppen
   filteredMarktgruppen$ = this.nameFilter.pipe(
     withLatestFrom(this.allMarktgruppen),
     map(([name, groups]: [string, MarketGroupView[]]) => {
@@ -20,11 +23,6 @@ export class MarktgruppenService {
 
   filterGruppe(name: string) {
     this.nameFilter.next(name);
-  }
-  constructor() {
-    this.allMarktgruppen.next(initGruppen);
-    console.log("tesst");
-    this.filteredMarktgruppen$.subscribe(items => console.log(items));
   }
 }
 
